@@ -152,7 +152,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 106369649}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 9e9434d2edae6b040865515340ce3e5b, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -175,7 +175,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 106369649}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -226,7 +226,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 106369649}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.104, y: 0.95682, z: -0.48773152}
+  m_LocalPosition: {x: 2.104, y: 1.198, z: -0.48773152}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -250,6 +250,7 @@ MonoBehaviour:
   playerMovementComp: {fileID: 0}
   mouseInput: {x: 0, y: 0, z: 0}
   sensitivity: {x: 2, y: 2}
+  maxLookXAxis: 75
 --- !u!54 &106369655
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -258,7 +259,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 106369649}
   serializedVersion: 4
-  m_Mass: 1
+  m_Mass: 2.32
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -290,9 +291,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movementInput: {x: 0, y: 0}
-  moveSpeed: 10
+  walkSpeed: 10
+  crouchSpeed: 5
+  currentSpeed: 0
   rigidbodyComponent: {fileID: 0}
-  lookDirection: {x: 0, y: 0, z: 0}
+  jumpForce: 5
+  isGrounded: 1
+  jumpNextFrame: 0
+  crouch: 0
+  crouchHeight: 0.5
+  standHeight: 0
 --- !u!1 &404777355
 GameObject:
   m_ObjectHideFlags: 0
@@ -448,7 +456,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 33efe5ecb5cb1854fae8b30f9a70025d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -577,8 +585,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1692663698}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.674, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.674, z: 0.00000044703484}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -20,6 +20,8 @@ public class PlayerCameraController : MonoBehaviour
     [SerializeField]
     public Vector2 sensitivity;
 
+    [SerializeField]
+    public float maxLookXAxis = 75.0f;
 
     private void Awake()
     {
@@ -40,23 +42,37 @@ public class PlayerCameraController : MonoBehaviour
         var xInput = Input.GetAxis("Mouse X");
         mouseInput = new Vector3(yInput * sensitivity.x, xInput * sensitivity.y, 0.0f);
 
-        // Rotate the camera base on the mouse input and the sensitivity
-        // The pain of working with quaternion is too much so I had to convert them into euler
-        // then convert it back to quaternion again
-        Cursor.lockState = CursorLockMode.Locked;
-        var lookDirection = playerCamera.transform.localRotation.eulerAngles + new Vector3(mouseInput.x, 0);
-        playerCamera.transform.localRotation = Quaternion.Euler(lookDirection);
-
-
-        //Quaternion.LookRotation(playerCamera.transform.forward, Vector3.up)
-        //playerMovementComp.transform.localRotation
+        // The camera can run with out the player movement component
         if (playerMovementComp)
         {
-            var playerDirection = playerCamera.transform.eulerAngles + new Vector3(0,mouseInput.y);
-            Debug.Log(playerDirection);
+            // Rotate the camera base on the mouse input and the sensitivity
+            // The pain of working with quaternion is too much so I had to convert them into euler
+            // then convert it back to quaternion again
+            Cursor.lockState = CursorLockMode.Locked;
+            var lookDirection = playerCamera.transform.localEulerAngles + new Vector3(mouseInput.x, 0);
+
+            // Clamp the up and down degree
+            if (lookDirection.x >= 180.0f)
+            {
+                lookDirection.x -= 360;
+            }
+
+            lookDirection.x = Mathf.Clamp(lookDirection.x, -maxLookXAxis, maxLookXAxis);
+            var newRot = Quaternion.Euler(lookDirection);
+            playerCamera.transform.localRotation = newRot;
+
+
+            // Rotate the player character if there are any
+            var playerDirection = playerCamera.transform.eulerAngles + new Vector3(0, mouseInput.y);
             var rot = new Vector3(0, playerDirection.y, 0);
             playerMovementComp.transform.rotation = Quaternion.Euler(rot);
 
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            var lookDirection = playerCamera.transform.localRotation.eulerAngles + mouseInput;
+            playerCamera.transform.localRotation = Quaternion.Euler(lookDirection);
         }
     }
 }
