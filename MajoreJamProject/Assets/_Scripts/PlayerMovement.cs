@@ -6,6 +6,7 @@ using UnityEngine.Serialization;
 // TD
 // Add a proper ground collision check
 // Make the movement less floaty 
+// Fix all the edge case about the input
 public class PlayerMovement : MonoBehaviour
 {
     //
@@ -19,6 +20,9 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField]
     private float crouchSpeed = 5f;
+
+    [SerializeField]
+    private float runSpeed = 15f;
 
     [SerializeField]
     private float currentSpeed;
@@ -40,13 +44,37 @@ public class PlayerMovement : MonoBehaviour
     //
     [Header("Crouch")]
     [SerializeField]
-    private bool crouch = false;
+    private bool isCrouch = false;
 
     [SerializeField]
     private float crouchHeight = 0.5f;
 
     [SerializeField]
     private float standHeight;
+
+    [SerializeField]
+    private float crouchRate = 0.5f;
+
+    //
+    [Header("Stamina")]
+    [SerializeField]
+    private bool isRunning = false;
+
+    [SerializeField]
+    private float maxStamina = 100.0f;
+
+    [SerializeField]
+    private float currentStamina;
+
+    [SerializeField]
+    private float staminaRegen = 10.0f;
+
+    // Comsumption per second
+    [SerializeField]
+    private float runStaminaConsumption = 30.0f;
+
+    [SerializeField]
+    private bool isRegening = false;
 
     // Start is called before the first frame update
     private void Awake()
@@ -58,17 +86,44 @@ public class PlayerMovement : MonoBehaviour
 
         standHeight = transform.localScale.y;
         currentSpeed = walkSpeed;
+        currentStamina = maxStamina;
     }
 
     // Update is called once per frame
     private void FixedUpdate()
     {
-        if(rigidbodyComponent)
+        // Movement State
+        // Enum and a swtich would better but again I am lazy
+        var currentHeight = transform.localScale.y;
+        if (isCrouch)
+        {
+            currentHeight = Mathf.Lerp(currentHeight, crouchHeight, crouchRate);
+            transform.localScale = new Vector3(1f, currentHeight, 1f);
+            currentSpeed = crouchSpeed;
+        }
+        else if(isRunning && !isCrouch && currentStamina > 0)
+        {
+            currentSpeed = runSpeed;
+            currentStamina -= runStaminaConsumption * Time.fixedDeltaTime;
+            PlayerUIManager.OnStaminaUpdate(currentStamina / maxStamina);
+        }
+        else
+        {
+            currentHeight = Mathf.Lerp(currentHeight, standHeight, crouchRate);
+            transform.localScale = new Vector3(1f, currentHeight, 1f);
+            currentSpeed = walkSpeed;
+
+            if(!isRegening)
+                StartCoroutine(StartStaminaRegen());
+        }
+
+        // Apply Movement
+        if (rigidbodyComponent)
         {
             var forwardVelocity = movementInput.x * currentSpeed * transform.forward;
             var rightVelocity = movementInput.y * currentSpeed * -transform.right;
             var upVelocity = new Vector3();
-            if (jumpNextFrame && isGrounded)
+            if (jumpNextFrame && isGrounded && currentStamina > 0)
             {
                 upVelocity = jumpForce * transform.up;
                 jumpNextFrame = false;
@@ -80,20 +135,6 @@ public class PlayerMovement : MonoBehaviour
             grav.z = 0;
             rigidbodyComponent.velocity = forwardVelocity + rightVelocity + upVelocity + grav;
         }
-
-        var currentHeight = transform.localScale.y;
-        if (crouch)
-        {
-            currentHeight = Mathf.Lerp(currentHeight, crouchHeight, crouchSpeed);
-            transform.localScale = new Vector3(1f, currentHeight, 1f);
-            currentSpeed = crouchSpeed;
-        }
-        else
-        {
-            currentHeight = Mathf.Lerp(currentHeight, standHeight, crouchSpeed);
-            transform.localScale = new Vector3(1f, currentHeight, 1f);
-            currentSpeed = walkSpeed;
-        }
     }
 
     private void Update()
@@ -103,10 +144,11 @@ public class PlayerMovement : MonoBehaviour
         var xInput = Input.GetAxis("Vertical");
         movementInput = new Vector2(xInput, yInput);
 
-        if(!jumpNextFrame)
+        if(!jumpNextFrame && isGrounded)
             jumpNextFrame = Input.GetKeyDown(KeyCode.Space);
 
-        crouch = Input.GetKey(KeyCode.LeftControl);
+        isCrouch = Input.GetKey(KeyCode.LeftControl);
+        isRunning = Input.GetKey(KeyCode.LeftShift);
     }
 
     // I am lazy so this would do for now
@@ -114,5 +156,20 @@ public class PlayerMovement : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         isGrounded = true;
+    }
+
+    private IEnumerator StartStaminaRegen()
+    {
+        isRegening = true;
+        while (currentStamina < maxStamina && !isRunning)
+        {
+            currentStamina += staminaRegen * Time.fixedDeltaTime;
+            PlayerUIManager.OnStaminaUpdate(currentStamina / maxStamina);
+            yield return new WaitForFixedUpdate();
+        }
+
+        StopCoroutine("WaitForStaminaRegen");
+        StopCoroutine("StartStaminaRegen");
+        isRegening = false;
     }
 }

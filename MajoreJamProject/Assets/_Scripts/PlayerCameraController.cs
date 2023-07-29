@@ -42,7 +42,7 @@ public class PlayerCameraController : MonoBehaviour
         var xInput = Input.GetAxis("Mouse X");
         mouseInput = new Vector3(yInput * sensitivity.x, xInput * sensitivity.y, 0.0f);
 
-        // The camera can run with out the player movement component
+        // The camera can run without the player movement component
         if (playerMovementComp)
         {
             // Rotate the camera base on the mouse input and the sensitivity
@@ -56,7 +56,6 @@ public class PlayerCameraController : MonoBehaviour
             {
                 lookDirection.x -= 360;
             }
-
             lookDirection.x = Mathf.Clamp(lookDirection.x, -maxLookXAxis, maxLookXAxis);
             var newRot = Quaternion.Euler(lookDirection);
             playerCamera.transform.localRotation = newRot;
@@ -66,7 +65,6 @@ public class PlayerCameraController : MonoBehaviour
             var playerDirection = playerCamera.transform.eulerAngles + new Vector3(0, mouseInput.y);
             var rot = new Vector3(0, playerDirection.y, 0);
             playerMovementComp.transform.rotation = Quaternion.Euler(rot);
-
         }
         else
         {
