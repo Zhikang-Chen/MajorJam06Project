@@ -7,6 +7,7 @@ using UnityEngine.Serialization;
 // Add a proper ground collision check
 // Make the movement less floaty 
 // Fix all the edge case about the input
+// Have Different timing of the step for each walk speed 
 public class PlayerMovement : MonoBehaviour
 {
     //
@@ -29,6 +30,13 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField]
     private Rigidbody rigidbodyComponent;
+
+    // What are you doing step timer?
+    // I do not regret making this joke
+    [SerializeField]
+    private float stepTimer = 0.2f;
+
+    private float stepTime = 0.0f;
 
     //
     [Header("Jumping")]
@@ -117,6 +125,22 @@ public class PlayerMovement : MonoBehaviour
                 StartCoroutine(StartStaminaRegen());
         }
 
+        if(movementInput.magnitude > 0 && isGrounded)
+        {
+            stepTime += Time.fixedDeltaTime;
+            if(stepTime >= stepTimer)
+            {
+                AudioManager.Instance.PlayAudio2D("Player_Step_1");
+                stepTime = 0;
+                Debug.Log("step");
+            }
+        }
+        else
+        {
+            stepTime = 0;
+        }
+
+
         // Apply Movement
         if (rigidbodyComponent)
         {
@@ -149,6 +173,12 @@ public class PlayerMovement : MonoBehaviour
 
         isCrouch = Input.GetKey(KeyCode.LeftControl);
         isRunning = Input.GetKey(KeyCode.LeftShift);
+
+        // Put this somewhere else
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            PlayerUIManager.OnPauseGame();
+        }
     }
 
     // I am lazy so this would do for now
