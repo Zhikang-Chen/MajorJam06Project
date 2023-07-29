@@ -20,7 +20,10 @@ public class StateMachine
         var t = GetTransition();
         //Check if there is a state to tranition to
         if (t != null)
+        {
             SetState(t.transitionTo);
+        }
+
 
         //Call State update func
         _currentState?.tick();
@@ -60,6 +63,7 @@ public class StateMachine
 
         //Update to State transitions
         _transition.TryGetValue(_currentState.GetType(), out _currenTransition);
+        _currenTransition ??= new List<Transition>(0);
 
         //Call Enter State
         _currentState?.Enter();
