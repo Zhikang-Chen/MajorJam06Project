@@ -30,7 +30,6 @@ public class AlienBrain : MonoBehaviour
         _roamState = new(this);
         _searchState = new(this, AlienNose);
 
-
         _stateMachine.AddTranistion(_roamState, _searchState, () => AlienNose.plantsInRange.Count > 0);
         _stateMachine.AddTranistion(_searchState, _roamState, () => _searchState.hasFinishedChecking == true);
 

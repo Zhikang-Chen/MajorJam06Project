@@ -6,6 +6,7 @@ using System.Collections.Generic;
 public class SmellDetector : MonoBehaviour
 {
     public Dictionary<GameObject, PLANT_TYPE> plantsInRange = new Dictionary<GameObject, PLANT_TYPE>();
+    public GameObject playersInRange;
 
     private void OnTriggerEnter(Collider other)
     {
