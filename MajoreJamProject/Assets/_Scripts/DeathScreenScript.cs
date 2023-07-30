@@ -14,11 +14,17 @@ public class DeathScreenScript : MonoBehaviour
 
     private void Awake()
     {
-        
+        Time.timeScale = 0;
+        Cursor.lockState = CursorLockMode.None;
+
+        restartButton.onClick.AddListener(Restart);
+        exitButton.onClick.AddListener(ExitGame);
     }
 
     private void Restart()
     {
+        Time.timeScale = 1;
+        Cursor.lockState = CursorLockMode.Locked;
         SceneManager.LoadScene("SampleScene");
     }
 
