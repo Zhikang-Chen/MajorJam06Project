@@ -8,32 +8,45 @@ public class AlienBrain : MonoBehaviour
 {
     private StateMachine _stateMachine = new();
 
-
+    public PlayerMovement player;
     public NavMeshAgent navMeshAgent { get; private set; }
 
     [Header("Base")]
     public float chase_Speed;
+    public float crouch_Modifier;
+
     public SmellDetector AlienNose;
 
     [Header("Roam State")]
     public List<Transform> patrolPoints;
-    private Roam _roamState;
 
-    //Search state
-    private Search _searchState;
 
 
     public void Start()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
 
-        _roamState = new(this);
-        _searchState = new(this, AlienNose);
+        var roamState = new Roam(this);
+        var searchState = new Search(this, AlienNose);
+        var fleeState = new Flee(this);
 
-        _stateMachine.AddTranistion(_roamState, _searchState, () => AlienNose.plantsInRange.Count > 0);
-        _stateMachine.AddTranistion(_searchState, _roamState, () => _searchState.hasFinishedChecking == true);
+        _stateMachine.AddTranistion(roamState, searchState, () => AlienNose.ObjectSmelled.Count > 0);
+        _stateMachine.AddTranistion(searchState, roamState, () => searchState.hasFinishedChecking == true);
 
-        _stateMachine.SetState(_roamState);
+        _stateMachine.AddAnyTranistion(fleeState, () =>
+        {
+            foreach (var item in AlienNose.ObjectSmelled)
+            {
+                if (item.GetComponent<SmellAble>().smellType == SMELL_TYPE.Repel)
+                {
+                    if (Vector3.Distance(transform.position, item.gameObject.transform.position) < 4f) return true;
+                }
+                 
+            }
+            return false;
+        });
+
+        _stateMachine.SetState(roamState);
     }
 
 
