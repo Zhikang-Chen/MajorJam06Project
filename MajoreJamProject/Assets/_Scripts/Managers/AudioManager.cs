@@ -68,8 +68,8 @@ public class AudioManager : MonoBehaviour
 
             var musicChannel = new GameObject("Music Channel");
             musicChannel.transform.parent = this.transform;
-            musicChannel.AddComponent<AudioSource>().volume = PlayerPrefs.GetFloat("MusicPref");
-
+            musicChannel.AddComponent<AudioSource>().volume = MusicVolume;
+            MusicChannels = musicChannel.GetComponent<AudioSource>();
             LoadAllAudioSource();
         }
         else

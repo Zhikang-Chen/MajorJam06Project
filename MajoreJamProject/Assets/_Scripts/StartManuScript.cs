@@ -18,6 +18,11 @@ public class StartManuScript : MonoBehaviour
         ExitButton.onClick.AddListener(ExitGame);
     }
 
+    private void Start()
+    {
+        AudioManager.Instance.PlayMusic("Title_2");
+    }
+
     void PlayGame()
     {
         SceneManager.LoadScene("SampleScene");
