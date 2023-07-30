@@ -37,40 +37,44 @@ public class PlayerCameraController : MonoBehaviour
 
     private void Update()
     {
-        // Could just put GetAxis in the vector it self but I have it this way so if for some reason we want controller input it would also work 
-        var yInput = -Input.GetAxis("Mouse Y");
-        var xInput = Input.GetAxis("Mouse X");
-        mouseInput = new Vector3(yInput * sensitivity.x, xInput * sensitivity.y, 0.0f);
-
-        // The camera can run without the player movement component
-        if (playerMovementComp)
+        // Laziness
+        if (Time.timeScale > 0)
         {
-            // Rotate the camera base on the mouse input and the sensitivity
-            // The pain of working with quaternion is too much so I had to convert them into euler
-            // then convert it back to quaternion again
-            Cursor.lockState = CursorLockMode.Locked;
-            var lookDirection = playerCamera.transform.localEulerAngles + new Vector3(mouseInput.x, 0);
+            // Could just put GetAxis in the vector it self but I have it this way so if for some reason we want controller input it would also work 
+            var yInput = -Input.GetAxis("Mouse Y");
+            var xInput = Input.GetAxis("Mouse X");
+            mouseInput = new Vector3(yInput * sensitivity.x, xInput * sensitivity.y, 0.0f);
 
-            // Clamp the up and down degree
-            if (lookDirection.x >= 180.0f)
+            Cursor.lockState = CursorLockMode.Locked;
+
+            // The camera can run without the player movement component
+            if (playerMovementComp)
             {
-                lookDirection.x -= 360;
+                // Rotate the camera base on the mouse input and the sensitivity
+                // The pain of working with quaternion is too much so I had to convert them into euler
+                // then convert it back to quaternion again
+                var lookDirection = playerCamera.transform.localEulerAngles + new Vector3(mouseInput.x, 0);
+
+                // Clamp the up and down degree
+                if (lookDirection.x >= 180.0f)
+                {
+                    lookDirection.x -= 360;
+                }
+                lookDirection.x = Mathf.Clamp(lookDirection.x, -maxLookXAxis, maxLookXAxis);
+                var newRot = Quaternion.Euler(lookDirection);
+                playerCamera.transform.localRotation = newRot;
+
+
+                // Rotate the player character if there are any
+                var playerDirection = playerCamera.transform.eulerAngles + new Vector3(0, mouseInput.y);
+                var rot = new Vector3(0, playerDirection.y, 0);
+                playerMovementComp.transform.rotation = Quaternion.Euler(rot);
             }
-            lookDirection.x = Mathf.Clamp(lookDirection.x, -maxLookXAxis, maxLookXAxis);
-            var newRot = Quaternion.Euler(lookDirection);
-            playerCamera.transform.localRotation = newRot;
-
-
-            // Rotate the player character if there are any
-            var playerDirection = playerCamera.transform.eulerAngles + new Vector3(0, mouseInput.y);
-            var rot = new Vector3(0, playerDirection.y, 0);
-            playerMovementComp.transform.rotation = Quaternion.Euler(rot);
-        }
-        else
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            var lookDirection = playerCamera.transform.localRotation.eulerAngles + mouseInput;
-            playerCamera.transform.localRotation = Quaternion.Euler(lookDirection);
+            else
+            {
+                var lookDirection = playerCamera.transform.localRotation.eulerAngles + mouseInput;
+                playerCamera.transform.localRotation = Quaternion.Euler(lookDirection);
+            }
         }
     }
 }
