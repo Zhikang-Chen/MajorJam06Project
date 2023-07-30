@@ -32,8 +32,12 @@ public class AlienBrain : MonoBehaviour
 
         var roamState = new Roam(this);
         var searchState = new Search(this, AlienNose);
+        var flee = new Flee(this);
 
         _stateMachine.AddTranistion(searchState, roamState, () => searchState.hasFinishedChecking == true);
+        _stateMachine.AddTranistion(searchState, flee, () => searchState.playerHasRun == true);
+
+        _stateMachine.AddTranistion(flee, roamState, () => flee.fled);
 
         _stateMachine.AddAnyTranistion(searchState, () => AlienNose.PlantInRange == true);
 

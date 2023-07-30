@@ -17,7 +17,7 @@ public class Search : IState
     private const float CHECKDISTANCE = 6f;
 
     public bool hasFinishedChecking = false;
-    public bool OnionDectected = false;
+    public bool playerHasRun = false;
 
     float initialSpeed;
 
@@ -36,7 +36,7 @@ public class Search : IState
         initialSpeed = _agent.speed;
 
         hasFinishedChecking = false;
-        OnionDectected = false;
+        playerHasRun = false;
 
         ChooseNewTarget();
     }
@@ -99,12 +99,12 @@ public class Search : IState
     {
         NavMesh.SamplePosition(_nose.NearestSmell.transform.position, out NavMeshHit hit, 1.0f, 1);
 
-        if (hit.position != null)
+        if (hit.hit)
         {
             return;
         }
 
-        hasFinishedChecking = true;
+        playerHasRun = true;
     }
 }
 
