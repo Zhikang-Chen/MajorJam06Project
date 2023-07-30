@@ -32,7 +32,7 @@ Transform:
   m_Children:
   - {fileID: 3930962716021949373}
   m_Father: {fileID: 0}
-  m_RootOrder: -1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!65 &6610829137472073021
 BoxCollider:
@@ -82,6 +82,7 @@ GameObject:
   - component: {fileID: 6382843184566697282}
   - component: {fileID: 280055209480142615}
   - component: {fileID: 4747494928424720201}
+  - component: {fileID: 2519966082040133607}
   m_Layer: 0
   m_Name: Door2
   m_TagString: Untagged
@@ -177,6 +178,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.028926888, y: 0.0035224115, z: 0.015098767}
   m_Center: {x: -0.000010073185, y: -0.00000000849832, z: -0.00009931184}
+--- !u!208 &2519966082040133607
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7931527638876184819}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.014, y: 0.002, z: 0.008}
+  m_MoveThreshold: 0.1
+  m_Carve: 0
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1 &8947751700602018879
 GameObject:
   m_ObjectHideFlags: 0
