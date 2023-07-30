@@ -1,11 +1,16 @@
 ﻿using System;
+using UnityEngine;
 using UnityEngine.AI;
 
 public class Flee : IState
 {
     private AlienBrain _alien;
-    private SmellDetector _nose;
     private NavMeshAgent _agent;
+
+    private const float FLEE_SPEED = 6F;
+    private const float FLEE_DISTANCE = 5F;
+
+    public bool fled;
 
     public Flee(AlienBrain alien)
     {
@@ -14,18 +19,38 @@ public class Flee : IState
 
     public void Enter()
     {
-        _nose = _alien.AlienNose;
-        _agent = _alien.navMeshAgent;
+        _agent = _alien.agent;
+
+        RunAway();
     }
 
     public void Exit()
     {
-        throw new NotImplementedException();
+        
     }
 
     public void tick()
     {
-        throw new NotImplementedException();
+        if(_agent.remainingDistance < 2f)
+        {
+            fled = true;
+        }
     }
+
+    private void RunAway()
+    {
+        Vector3 randomDirection = UnityEngine.Random.insideUnitSphere * FLEE_DISTANCE;
+
+        Vector3 runAwayPosition = _agent.destination + randomDirection;
+
+        NavMeshHit navMeshHit;
+
+        if (NavMesh.SamplePosition(runAwayPosition, out navMeshHit, FLEE_DISTANCE, NavMesh.AllAreas))
+        {
+            _agent.SetDestination(navMeshHit.position);
+            _agent.speed = FLEE_SPEED;
+        }
+    }
+
 }
 

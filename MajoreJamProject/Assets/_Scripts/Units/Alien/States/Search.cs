@@ -87,9 +87,13 @@ public class Search : IState
 
     private void DestroyPlant()
     {
-        //Destroy animation would go here
+        //Is this smart
+        //God no
+        //Will I do it anyways.. yes
+        _alien.isAttacking = true;
         ObjectSmelled[_target].SetActive(false);
         ObjectSmelled.Remove(ObjectSmelled[_target]);
+        _alien.isAttacking = false;
     }
 
     private void ChooseNewTarget()

@@ -26,7 +26,7 @@ public class Roam : IState
     public void Enter()
     {
         Debug.Log("<Color=red>" + _alien.transform.name + "</color> has entered Roam State");
-        _agent = _alien.navMeshAgent;
+        _agent = _alien.agent;
     }
 
     public void Exit()

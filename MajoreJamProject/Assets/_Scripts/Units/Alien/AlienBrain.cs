@@ -9,7 +9,9 @@ public class AlienBrain : MonoBehaviour
     private StateMachine _stateMachine = new();
 
     public PlayerMovement player;
-    public NavMeshAgent navMeshAgent { get; private set; }
+    public Animator anim;
+
+    public NavMeshAgent agent { get; private set; }
 
     [Header("Base")]
     public float chase_Speed;
@@ -20,11 +22,13 @@ public class AlienBrain : MonoBehaviour
     [Header("Roam State")]
     public List<Transform> patrolPoints;
 
+    [HideInInspector]
+    public bool isAttacking = false;
 
 
     public void Start()
     {
-        navMeshAgent = GetComponent<NavMeshAgent>();
+        agent = GetComponent<NavMeshAgent>();
 
         var roamState = new Roam(this);
         var searchState = new Search(this, AlienNose);
@@ -54,5 +58,8 @@ public class AlienBrain : MonoBehaviour
     void Update()
     {
         _stateMachine.Tick();
+
+        anim.SetFloat("Speed", agent.speed);
+        anim.SetBool("Attack", isAttacking);
     }
 }
