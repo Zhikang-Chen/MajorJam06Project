@@ -127,13 +127,14 @@ public class PlayerMovement : MonoBehaviour
 
         if(movementInput.magnitude > 0 && isGrounded)
         {
-            stepTime += Time.fixedDeltaTime;
-            if(stepTime >= stepTimer)
+            // Too much work to have different step timer for each movement speed
+            // so the walk speed will be the standard
+            if(stepTime >= stepTimer * (walkSpeed / currentSpeed))
             {
                 AudioManager.Instance.PlayAudio2D("Player_Step_1");
                 stepTime = 0;
-                Debug.Log("step");
             }
+            stepTime += Time.fixedDeltaTime;
         }
         else
         {
@@ -187,6 +188,7 @@ public class PlayerMovement : MonoBehaviour
     {
         isGrounded = true;
     }
+
 
     private IEnumerator StartStaminaRegen()
     {

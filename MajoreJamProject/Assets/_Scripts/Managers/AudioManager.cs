@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class AudioManager : MonoBehaviour
 {
@@ -20,6 +21,8 @@ public class AudioManager : MonoBehaviour
     private static List<AudioSource> Channels = new List<AudioSource>();
     private static AudioSource MusicChannels = null;
 
+
+    private static AudioSource[] AllAudioSource = null;
 
     private void Awake()
     {
@@ -66,6 +69,8 @@ public class AudioManager : MonoBehaviour
             var musicChannel = new GameObject("Music Channel");
             musicChannel.transform.parent = this.transform;
             musicChannel.AddComponent<AudioSource>().volume = PlayerPrefs.GetFloat("MusicPref");
+
+            LoadAllAudioSource();
         }
         else
         {
@@ -212,11 +217,20 @@ public class AudioManager : MonoBehaviour
 
     public void UpdateVolume()
     {
-
-        foreach (var channel in Channels)
+        foreach (var channel in AllAudioSource)
         {
             channel.volume = SFXVolume;
         }
         MusicChannels.volume = MusicVolume;
+    }
+
+    public void LoadAllAudioSource()
+    {
+        AllAudioSource = FindObjectsOfType<AudioSource>();
+    }
+
+    public void OnLevelWasLoaded(int level)
+    {
+        LoadAllAudioSource();
     }
 }
