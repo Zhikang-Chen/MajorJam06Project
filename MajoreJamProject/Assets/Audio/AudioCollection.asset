@@ -19,8 +19,18 @@ MonoBehaviour:
     Audio: {fileID: 8300000, guid: 08165089aa41f363ba68ae5c06d9733b, type: 3}
   - ID: Player_Hurt_2
     Audio: {fileID: 8300000, guid: 7e3ed80081d39dec6b3219f597962405, type: 3}
+  - ID: Alien_far
+    Audio: {fileID: 8300000, guid: 411438856318c806d8e5ebf9058323f7, type: 3}
+  - ID: Alien_Close
+    Audio: {fileID: 8300000, guid: 34d5bfd3bfeea793fa59d545c07d34ab, type: 3}
+  - ID: Alien_Close
+    Audio: {fileID: 8300000, guid: 34d5bfd3bfeea793fa59d545c07d34ab, type: 3}
   Music:
   - ID: Title_1
     Audio: {fileID: 8300000, guid: 4b54c46c71b6a29d0b7ec4bc6ef56106, type: 3}
   - ID: Title_2
     Audio: {fileID: 8300000, guid: 0814265fb116239bd8cc8d096637ccc2, type: 3}
+  - ID: Music_Chase
+    Audio: {fileID: 8300000, guid: 94814b822e6964a1e9778583631488d9, type: 3}
+  - ID: 'Music_Roam '
+    Audio: {fileID: 8300000, guid: 5126e450e38f0410a89be06a3309c781, type: 3}
