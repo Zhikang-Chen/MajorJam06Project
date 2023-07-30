@@ -1,32 +1,50 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Door : MonoBehaviour
 {
     public Transform DoorObject;
-    public float xOffset;
-    public float smoothingTime = 2f;
+    public Vector3 OpenPosition;
+    public float smoothingTime = .3f;
 
     private bool Open;
     private Vector3 closePosition;
-    private Vector3 openPosition;
+    private Vector3 targetPosition;
 
     private void Start()
     {
-        closePosition = DoorObject.position;
-        openPosition = closePosition;
-        openPosition.x = xOffset;
+        closePosition = DoorObject.localPosition;
+        targetPosition = closePosition; 
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        DoorObject.position = Vector3.Lerp(DoorObject.position, openPosition, smoothingTime * Time.deltaTime);
+        if (!Open)
+        {
+            Open = true;
+            StartCoroutine(MoveDoor(targetPosition, OpenPosition));
+        }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        DoorObject.position = Vector3.Lerp(DoorObject.position, closePosition, smoothingTime * Time.deltaTime);
+        if (Open)
+        {
+            Open = false;
+            StartCoroutine(MoveDoor(targetPosition, closePosition));
+        }
+    }
+
+    private IEnumerator MoveDoor(Vector3 start, Vector3 end)
+    {
+        float elapsedTime = 0f;
+        while (elapsedTime < smoothingTime)
+        {
+            DoorObject.localPosition = Vector3.Lerp(start, end, elapsedTime / smoothingTime);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        DoorObject.localPosition = end; 
+        targetPosition = end; 
     }
 }
-

@@ -191,7 +191,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67b1654888ebf4383ba7ef97f510335c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DoorObject: {fileID: 0}
+  DoorObject: {fileID: 6040106125135338001}
   xOffset: -0.02684
   smoothingTime: 2
 --- !u!1 &7477125835944967639
