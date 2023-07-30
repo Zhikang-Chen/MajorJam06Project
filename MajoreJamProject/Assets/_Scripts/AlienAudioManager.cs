@@ -7,11 +7,21 @@ public class AlienAudioManager : MonoBehaviour
     public float SoundIntervals;
     public GameObject player;
 
+    public AudioSource _audio;
+    public AudioClip Close;
+    public AudioClip far;
+
     private bool _playSound;
 
+    private void Start()
+    {
+        _audio = GetComponent<AudioSource>();
+    }
     // Update is called once per frame
     void Update()
     {
+        _audio.volume = AudioManager.Instance.SFXVolume;
+
         if(_playSound)
         {
             ChooseSound();
@@ -23,10 +33,10 @@ public class AlienAudioManager : MonoBehaviour
         float Distance = Vector3.Distance(transform.position, player.transform.position);
         if(Distance < 8f)
         {
-            AudioManager.Instance.PlayAudio3D("Alien_Close", transform.position);
+            _audio.PlayOneShot(Close);
         } else
         {
-            AudioManager.Instance.PlayAudio3D("Alien_Far", transform.position);
+            _audio.PlayOneShot(far);
         }
 
         _playSound = false;

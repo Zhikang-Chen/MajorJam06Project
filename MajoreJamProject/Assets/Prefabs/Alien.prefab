@@ -1838,7 +1838,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 0}
   anim: {fileID: 513826353067181612}
-  chase_Speed: 8
+  chase_Speed: 6
   crouch_Modifier: 0.7
   AlienNose: {fileID: 2612515915937409662}
   patrolPoints: []
@@ -1900,6 +1900,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SoundIntervals: 0
   player: {fileID: 0}
+  _audio: {fileID: 0}
+  Close: {fileID: 0}
+  far: {fileID: 0}
 --- !u!1 &8030686026895153824
 GameObject:
   m_ObjectHideFlags: 0
