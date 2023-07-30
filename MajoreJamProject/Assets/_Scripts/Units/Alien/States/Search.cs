@@ -12,25 +12,33 @@ public class Search : IState
     private SmellDetector _nose;
     private NavMeshAgent _agent;
 
-    private List<GameObject> plants;
-    private int _plantTarget = -1;
+    private List<GameObject> ObjectSmelled;
+    private int _target = -1;
 
-    private float _stopDistance = 0.5f;
-    private float _CheckDistance = 3f;
+    private const float STOPDISTANCE = 0.5f;
+    private const float CHECKDISTANCE = 4f;
 
     public bool hasFinishedChecking = false;
     public bool OnionDectected = false;
 
+    float initialSpeed;
+
     public Search(AlienBrain alien, SmellDetector smellDetector)
     {
         _alien = alien;
+        _nose = smellDetector;
     }
 
     public void Enter()
     {
         Debug.Log("<Color=red>" + _alien.transform.name + "</color> has entered Search State");
-        SortPlantOrder(out plants);
+
+        _target = -1;
+
+        SortPlantOrder(out ObjectSmelled);
         ChooseNewTarget();
+
+        initialSpeed = _agent.speed;
 
         hasFinishedChecking = false;
         OnionDectected = false;
@@ -39,53 +47,71 @@ public class Search : IState
     public void Exit()
     {
         Debug.Log("<Color=red>" + _alien.transform.name + "</color> has exited Search State");
+        _agent.speed = initialSpeed;
     }
 
     public void tick()
     {
-        if(_agent.remainingDistance < _CheckDistance)
+        if(_agent.remainingDistance < CHECKDISTANCE)
         {
             CheckPlantSmell();
         }
 
-        if(_agent.remainingDistance < _stopDistance)
+        if(_agent.remainingDistance < STOPDISTANCE)
         {
             DestroyPlant();
             ChooseNewTarget();
         }
     }
 
+  
     private void CheckPlantSmell()
     {
-        if (plants[_plantTarget].GetComponent<Plant>().plantType == PLANT_TYPE.Repel)
+        var tar = ObjectSmelled[_target].GetComponent<SmellAble>();
+
+        if (tar.smellType == SMELL_TYPE.Repel)
         {
             OnionDectected = true;
+        }
+
+        if(tar.smellType == SMELL_TYPE.Attract)
+        {
+            _agent.speed = _alien.chase_Speed;
+
+            if (ObjectSmelled[_target].GetComponent<PlayerMovement>() != null)
+            {
+                _agent.speed = _alien.chase_Speed * _alien.crouch_Modifier;
+            }
         }
     }
 
     private void DestroyPlant()
     {
-        //Destroy animation would go here
-        plants[_plantTarget].GetComponent<Plant>().DestroyPlant();
+        //Is this smart
+        //God no
+        //Will I do it anyways.. yes
+        _alien.isAttacking = true;
+        ObjectSmelled[_target].SetActive(false);
+        ObjectSmelled.Remove(ObjectSmelled[_target]);
+        _alien.isAttacking = false;
     }
 
     private void ChooseNewTarget()
     {
-        _plantTarget++;
-        if (_plantTarget > plants.Count) hasFinishedChecking = false;
+        _agent.speed = initialSpeed;
 
-        _agent.SetDestination(plants[0].transform.position);
+        _target++;
+        if (_target > ObjectSmelled.Count) hasFinishedChecking = false;
+
+
+        _agent.SetDestination(ObjectSmelled[0].transform.position);
     }
 
     public void SortPlantOrder(out List<GameObject> obj)
     {
-        var sorted = _nose.plantsInRange.OrderBy(pair => Vector3.Distance(_alien.transform.position, pair.Key.transform.position));
+        var sorted = _nose.ObjectSmelled.OrderBy(pair => Vector3.Distance(_alien.transform.position, pair.transform.position)).ToList();
 
-        Debug.Log(sorted);
-
-        var gameObject = sorted.ToList();
-
-        obj = gameObject.Select(pair => pair.Key).ToList();
+        obj = sorted;
     }
 }
 
