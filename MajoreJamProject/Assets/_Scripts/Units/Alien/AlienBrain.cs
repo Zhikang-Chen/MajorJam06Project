@@ -32,23 +32,10 @@ public class AlienBrain : MonoBehaviour
 
         var roamState = new Roam(this);
         var searchState = new Search(this, AlienNose);
-        var fleeState = new Flee(this);
 
-        _stateMachine.AddTranistion(roamState, searchState, () => AlienNose.ObjectSmelled.Count > 0);
         _stateMachine.AddTranistion(searchState, roamState, () => searchState.hasFinishedChecking == true);
 
-        _stateMachine.AddAnyTranistion(fleeState, () =>
-        {
-            foreach (var item in AlienNose.ObjectSmelled)
-            {
-                if (item.GetComponent<SmellAble>().smellType == SMELL_TYPE.Repel)
-                {
-                    if (Vector3.Distance(transform.position, item.gameObject.transform.position) < 4f) return true;
-                }
-                 
-            }
-            return false;
-        });
+        _stateMachine.AddAnyTranistion(searchState, () => AlienNose.PlantInRange == true);
 
         _stateMachine.SetState(roamState);
     }
