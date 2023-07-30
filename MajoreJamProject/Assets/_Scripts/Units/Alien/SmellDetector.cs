@@ -5,7 +5,8 @@ using System.Collections.Generic;
 
 public class SmellDetector : MonoBehaviour
 {
-    public List<GameObject> ObjectSmelled = new List<GameObject>();
+    public bool PlantInRange;
+    public GameObject NearestSmell;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -13,8 +14,15 @@ public class SmellDetector : MonoBehaviour
 
         if(s != null)
         {
-            ObjectSmelled.Add(other.gameObject);
+            NearestSmell = other.gameObject;
+            PlantInRange = true;
         }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        NearestSmell = other.gameObject;
+        PlantInRange = false;
     }
 }
 

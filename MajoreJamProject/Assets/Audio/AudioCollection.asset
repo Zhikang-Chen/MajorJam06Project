@@ -23,8 +23,6 @@ MonoBehaviour:
     Audio: {fileID: 8300000, guid: 411438856318c806d8e5ebf9058323f7, type: 3}
   - ID: Alien_Close
     Audio: {fileID: 8300000, guid: 34d5bfd3bfeea793fa59d545c07d34ab, type: 3}
-  - ID: Alien_Close
-    Audio: {fileID: 8300000, guid: 34d5bfd3bfeea793fa59d545c07d34ab, type: 3}
   Music:
   - ID: Title_1
     Audio: {fileID: 8300000, guid: 4b54c46c71b6a29d0b7ec4bc6ef56106, type: 3}

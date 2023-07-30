@@ -12,11 +12,9 @@ public class Search : IState
     private SmellDetector _nose;
     private NavMeshAgent _agent;
 
-    private List<GameObject> ObjectSmelled;
-    private int _target = -1;
 
     private const float STOPDISTANCE = 0.5f;
-    private const float CHECKDISTANCE = 4f;
+    private const float CHECKDISTANCE = 6f;
 
     public bool hasFinishedChecking = false;
     public bool OnionDectected = false;
@@ -33,25 +31,27 @@ public class Search : IState
     {
         Debug.Log("<Color=red>" + _alien.transform.name + "</color> has entered Search State");
 
-        _target = -1;
-
-        SortPlantOrder(out ObjectSmelled);
-        ChooseNewTarget();
+        _agent = _alien.agent;
 
         initialSpeed = _agent.speed;
 
         hasFinishedChecking = false;
         OnionDectected = false;
+
+        ChooseNewTarget();
     }
 
     public void Exit()
     {
         Debug.Log("<Color=red>" + _alien.transform.name + "</color> has exited Search State");
         _agent.speed = initialSpeed;
+        _alien.isAttacking = false;
     }
 
     public void tick()
     {
+        CheckTargetValidity();
+
         if(_agent.remainingDistance < CHECKDISTANCE)
         {
             CheckPlantSmell();
@@ -60,25 +60,19 @@ public class Search : IState
         if(_agent.remainingDistance < STOPDISTANCE)
         {
             DestroyPlant();
-            ChooseNewTarget();
         }
     }
 
   
     private void CheckPlantSmell()
     {
-        var tar = ObjectSmelled[_target].GetComponent<SmellAble>();
+        var tar = _nose.NearestSmell.GetComponent<SmellAble>();
 
-        if (tar.smellType == SMELL_TYPE.Repel)
-        {
-            OnionDectected = true;
-        }
-
-        if(tar.smellType == SMELL_TYPE.Attract)
+        if (tar != null)
         {
             _agent.speed = _alien.chase_Speed;
 
-            if (ObjectSmelled[_target].GetComponent<PlayerMovement>() != null)
+            if (_nose.NearestSmell.GetComponent<PlayerMovement>() != null)
             {
                 _agent.speed = _alien.chase_Speed * _alien.crouch_Modifier;
             }
@@ -91,27 +85,26 @@ public class Search : IState
         //God no
         //Will I do it anyways.. yes
         _alien.isAttacking = true;
-        ObjectSmelled[_target].SetActive(false);
-        ObjectSmelled.Remove(ObjectSmelled[_target]);
-        _alien.isAttacking = false;
     }
 
     private void ChooseNewTarget()
     {
         _agent.speed = initialSpeed;
 
-        _target++;
-        if (_target > ObjectSmelled.Count) hasFinishedChecking = false;
-
-
-        _agent.SetDestination(ObjectSmelled[0].transform.position);
+        _agent.SetDestination(_nose.NearestSmell.transform.position);
     }
 
-    public void SortPlantOrder(out List<GameObject> obj)
-    {
-        var sorted = _nose.ObjectSmelled.OrderBy(pair => Vector3.Distance(_alien.transform.position, pair.transform.position)).ToList();
 
-        obj = sorted;
+    public void CheckTargetValidity()
+    {
+        NavMesh.SamplePosition(_nose.NearestSmell.transform.position, out NavMeshHit hit, 1.0f, 1);
+
+        if (hit.position != null)
+        {
+            return;
+        }
+
+        hasFinishedChecking = true;
     }
 }
 
