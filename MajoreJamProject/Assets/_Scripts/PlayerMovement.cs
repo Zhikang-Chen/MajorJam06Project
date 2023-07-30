@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.SceneManagement;
 
 // TD
 // Add a proper ground collision check
@@ -186,7 +187,12 @@ public class PlayerMovement : MonoBehaviour
     // Need to change it later
     private void OnCollisionEnter(Collision collision)
     {
-        isGrounded = true;
+        //isGrounded = true;
+
+        if(collision.gameObject.GetComponent<AlienBrain>())
+        {
+            SceneManager.LoadScene("DealthScreen", LoadSceneMode.Additive);
+        }
     }
 
 
