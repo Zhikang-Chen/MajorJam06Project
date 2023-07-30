@@ -148,12 +148,12 @@ public class PlayerMovement : MonoBehaviour
             var forwardVelocity = movementInput.x * currentSpeed * transform.forward;
             var rightVelocity = movementInput.y * currentSpeed * -transform.right;
             var upVelocity = new Vector3();
-            if (jumpNextFrame && isGrounded && currentStamina > 0)
-            {
-                upVelocity = jumpForce * transform.up;
-                jumpNextFrame = false;
-                isGrounded = false;
-            }
+            //if (jumpNextFrame && isGrounded && currentStamina > 0)
+            //{
+            //    upVelocity = jumpForce * transform.up;
+            //    jumpNextFrame = false;
+            //    isGrounded = false;
+            //}
 
             var grav = rigidbodyComponent.velocity;
             grav.x = 0;
