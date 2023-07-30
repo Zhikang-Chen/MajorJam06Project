@@ -16,7 +16,7 @@ RenderTexture:
   serializedVersion: 5
   m_Width: 1000
   m_Height: 500
-  m_AntiAliasing: 1
+  m_AntiAliasing: 8
   m_MipCount: -1
   m_DepthStencilFormat: 94
   m_ColorFormat: 8
@@ -28,12 +28,12 @@ RenderTexture:
   m_EnableCompatibleFormat: 1
   m_TextureSettings:
     serializedVersion: 2
-    m_FilterMode: 1
+    m_FilterMode: 2
     m_Aniso: 0
     m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
+    m_WrapU: 2
+    m_WrapV: 2
+    m_WrapW: 2
   m_Dimension: 2
   m_VolumeDepth: 1
   m_ShadowSamplingMode: 2
